@@ -1,0 +1,17 @@
+{
+  "name": "short-it",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "peteroid",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "debug": "DEBUG=* node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "helmet": "^3.14.0",
+    "nanoid": "^1.3.3"
+  }
+}
