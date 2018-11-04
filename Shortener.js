@@ -62,9 +62,15 @@ class Shortener {
   }
 
   async getUrlFromCode (code) {
-    if (!this._byCode[code]) return null
-    const { url } = this._byCode[code]
-    return url ? ('' + url) : null
+    const item = await DB.getCodeItem(code)
+    if (!item) return null
+
+    const { urlId } = item
+    const urlItem = await DB.getUrlItem(urlId)
+    if (!urlItem) return null
+
+    const { url } = urlItem
+    return url
   }
 }
 

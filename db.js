@@ -22,7 +22,7 @@ function getCodeItem (key) {
 
       let result = null
 
-      const urlId = _.get(data, 'Item.shortId.S')
+      const urlId = _.get(data, 'Item.urlId.S')
       if (urlId) {
         console.log('[aws] get code item', urlId)
         result = { urlId }
