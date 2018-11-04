@@ -3,11 +3,10 @@ const generate = require('nanoid/generate')
 const _ = require('lodash')
 
 const DB = require('./db')
-
-const DOMAIN = `http://peteroid.com`
+const { DOMAIN, CHARS } = require('./config')
 
 function getRandomCode (length = 8) {
-  return generate('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', length)
+  return generate(CHARS, length)
 }
 
 function hashUrlToId (url) {
@@ -15,11 +14,6 @@ function hashUrlToId (url) {
 }
 
 class Shortener {
-  constructor () {
-    // this._byCode = {}
-    // this._urlToCode = {}
-  }
-
   getShortUrlFromCode (code) {
     return `${DOMAIN}/${code}`
   }
