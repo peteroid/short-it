@@ -18,10 +18,3 @@ source ~/.bashrc
 
 echo "Installing pm2"
 npm i pm2@latest -g
-
-echo "Downloading source"
-cd ~
-git clone https://github.com/peteroid/short-it.git
-cd short-it
-yarn
-pm2 start app.js --name app
