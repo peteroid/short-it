@@ -1,24 +1,51 @@
+const UUID = require('uuid/v5')
 const generate = require('nanoid/generate')
+const _ = require('lodash')
+
+const DB = require('./db')
 
 const DOMAIN = `http://peteroid.com`
 
+function getRandomCode (length = 8) {
+  return generate('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', length)
+}
+
+function hashUrlToId (url) {
+  return UUID(url, UUID.URL)
+}
+
 class Shortener {
   constructor () {
-    this._byCode = {}
-    this._urlToCode = {}
+    // this._byCode = {}
+    // this._urlToCode = {}
   }
 
   getShortUrlFromCode (code) {
     return `${DOMAIN}/${code}`
   }
 
-  // TODO: connect to DB
   async getCode (url) {
-    if (!this._urlToCode[url]) {
-      // TODO: fix collision
-      this._urlToCode[url] = generate('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8)
+    const urlId = hashUrlToId(url)
+    const item = await DB.getUrlItem(urlId)
+
+    const _code = _.get(item, 'code')
+    if (_code) {
+      return _code
     }
-    return '' + this._urlToCode[url]
+
+    // not exists, can process the shortening
+    let code, codeItem
+    do {
+      code = getRandomCode()
+      codeItem = await DB.getCodeItem(code)
+    } while (codeItem)
+
+    await Promise.all([
+      DB.putUrlItem(urlId, { code, url }),
+      DB.putCodeItem(code, { urlId })
+    ])
+
+    return code
   }
 
   async getShortUrl (_url) {
@@ -28,13 +55,10 @@ class Shortener {
     }
 
     const code = await this.getCode(url)
-    if (!this._byCode[code]) {
-      this._byCode[code] = {
-        url,
-        shorten_url: this.getShortUrlFromCode(code)
-      }
+    return {
+      url,
+      shorten_url: this.getShortUrlFromCode(code)
     }
-    return this._byCode[code]
   }
 
   async getUrlFromCode (code) {
