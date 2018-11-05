@@ -2,12 +2,15 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 
+const { HTTP_PORT } = require('./config')
 const router = require('./routes')
 
 const app = express()
-const port = 3000
+const port = HTTP_PORT
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
+  console.log('[app] running on development')
+} else {
   app.use(helmet())
 }
 

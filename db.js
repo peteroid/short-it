@@ -1,8 +1,14 @@
 const AWS = require('aws-sdk')
 const _ = require('lodash')
 
+const {
+  AWS_REGION,
+  AWS_DYNAMODB_URL_TABLE,
+  AWS_DYNAMODB_CODE_TABLE
+} = require('./config')
+
 const DB = new AWS.DynamoDB({
-  region: 'ap-southeast-1'
+  region: AWS_REGION
 })
 
 function getCodeItem (key) {
@@ -13,7 +19,7 @@ function getCodeItem (key) {
           S: key
         }
       },
-      TableName: 'short-it-code'
+      TableName: AWS_DYNAMODB_CODE_TABLE
     }, (err, data) => {
       if (err) {
         reject(err)
@@ -40,7 +46,7 @@ function getUrlItem (key) {
           S: key
         }
       },
-      TableName: 'short-it-db'
+      TableName: AWS_DYNAMODB_URL_TABLE
     }, (err, data) => {
       if (err) {
         reject (err)
@@ -71,7 +77,7 @@ function putCodeItem (key, { urlId }) {
           S: urlId
         }
       },
-      TableName: 'short-it-code'
+      TableName: AWS_DYNAMODB_CODE_TABLE
     }, (err, data) => {
       if (err) {
         reject(err)
@@ -97,7 +103,7 @@ function putUrlItem (key, { url, code }) {
           S: code
         }
       },
-      TableName: 'short-it-db'
+      TableName: AWS_DYNAMODB_URL_TABLE
     }, (err, data) => {
       if (err) {
         reject(err)
